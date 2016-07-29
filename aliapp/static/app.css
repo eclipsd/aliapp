@@ -1,0 +1,68 @@
+.mdl-navigation__link {
+  color: #ccc;
+}
+
+.page-content {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 10px;
+}
+
+.card {
+  margin: 10px;
+  min-width: 100px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.disclaimer {
+  color: #aaa;
+  font-style: italic;
+  padding: 8px;
+  text-align: center;
+}
+
+.fixed-fab {
+  position: fixed;
+  right: 5%;
+  bottom: 5%;
+}
+
+.mdl-dialog {
+  width: 40%;
+  min-width: 500px;
+}
+
+.mdl-dialog__content {
+  display: flex;
+  justify-content: center;
+}
+
+.background-icon {
+  position: absolute;
+  right: 25px;
+  top: 50px;
+}
+
+.mdl-card__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fixed-footer {
+  position: absolute;
+  width: 100%;
+  background-color: #3949AB;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  color: #FAFAFA;
+  bottom: 0;
+}
+
+#apps-form {
+  width: 100%;
+}
+
+#apps-table_wrapper {
+  width: 100%;
+}

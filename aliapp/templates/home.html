@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}Home{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static "vendor/fills/dialog-polyfill.css" %}">
+<link rel="stylesheet" href="{% static "vendor/datatables/dataTables.material.min.css" %}">
+<script src="https://use.fontawesome.com/874d5c994d.js"></script>
+{% endblock %}
+
+{% block dialog %}
+<dialog class="mdl-dialog" id="add-dialog">
+  <form action="{% url 'modify' %}" id="apps-form" method="post">
+    {% csrf_token %}
+    <p class="mdl-dialog__title">Add New App</p>
+    <div class="mdl-dialog__content">
+      <table id="apps-table" class="mdl-data-table mdl-js-data-table" cellspacing=0 width="100%">
+        <thead>
+          <tr>
+            <th>Enabled</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Color</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for app in all_apps %}
+          <tr>
+            <td>
+              <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-{{ app.id }}">
+                <input type="checkbox" id="switch-{{ app.id }}" class="mdl-switch__input"
+                       name="enabled" value="{{ app.id }}" {{ app.enabled | yesno:"checked," }}>
+                <span class="mdl-switch__label"></span>
+              </label>
+            </td>
+            <td>{{ app.name }}</td>
+            <td>{{ app.description }}</td>
+            <td>{{ app.color }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button type="button" class="mdl-button close">Close</button>
+      <button type="submit" class="mdl-button">Accept</button>
+    </div>
+  </form>
+</dialog>
+{% endblock %}
+
+{% block content %}
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+  <header class="mdl-layout__header">
+    <div class="mdl-layout__header-row">
+      <span class="mdl-layout-title">Alice's Apps</span>
+      <div class="mdl-layout-spacer"></div>
+      <div>
+        Logged in as <b>{{ user.username }}</b>.
+        <a href="{% url 'logout' %}">Logout</a>
+      </div>
+    </div>
+  </header>
+  <main class="mdl-layout__content">
+    <div class="page-content">
+      {% for app in enabled_apps %}
+      <div class="card mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title mdl-card--expand" style="background-color: {{ app.app.color | lower }}"></div>
+        <div class="mdl-card__title mdl-card--expand">
+          <h2 class="mdl-card__title-text">{{ app.app.name }}</h2>
+        </div>
+        <div class="mdl-card__supporting-text">
+          {{ app.app.description }}<br />
+          Color: {{ app.app.color }}
+          <div class="background-icon"><i class="fa fa-{{ app.app.icon }} fa-5x"></i></div>
+        </div>
+        <div class="mdl-card__actions mdl-card--border">
+          <form action="{% url 'remove' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="app_id" value="{{ app.id }}">
+            <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+              Remove
+            </button>
+            <a class="mdl-button mdl-button--colored" href="http://lmgtfy.com/?q={{ app.app.name }}">Go</a>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored fixed-fab" id="add-button">
+      <i class="material-icons">add</i>
+    </div>
+    <div class="fixed-footer">
+      Exercise for the Great Lakes Bioenergy Research Center // https://www.glbrc.org
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block js %}
+  <script src="{% static "vendor/datatables/jquery.dataTables.min.js" %}"></script>
+  <script src="{% static "vendor/datatables/dataTables.material.min.js" %}"></script>
+  <script src="{% static "vendor/fills/dialog-polyfill.js" %}"></script>
+  <script>
+    var dialog = document.querySelector('#add-dialog');
+    var button = document.querySelector('#add-button');
+
+    if (!dialog.showModal) {
+      dialogPolyfill.registerDialog(dialog);
+    }
+    button.addEventListener('click', function() {
+      dialog.showModal();
+    })
+    dialog.querySelector('.close').addEventListener('click', function() {
+      dialog.close();
+    })
+  </script>
+  <script>
+    $(document).ready(function() {
+      $('#apps-table').DataTable( {
+        columnDefs: [{
+          targets: [0, 1, 2, 3],
+          className: 'mdl-data-table__cell--non-numeric'
+        }, {
+          width: 50,
+          targets: 0
+        }],
+        order: [[1, "asc"]],
+        autoWidth: false
+      })
+    });
+  </script>
+{% endblock %}

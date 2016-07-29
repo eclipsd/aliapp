@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static "auth/auth.css" %}">
+{% endblock %}
+
+{% block content %}
+<div class="mdl-card mdl-shadow--2dp">
+  <div class="mdl-card__supporting-text">
+    You have succesfully logged out.
+    <a href="{% url 'login' %}">Return to login.</a>
+  </div>
+</div>
+{% endblock %}
